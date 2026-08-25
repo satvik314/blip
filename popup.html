@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Blip</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div class="shell">
+    <div class="screw screw-tl"></div>
+    <div class="screw screw-tr"></div>
+    <div class="screw screw-bl"></div>
+    <div class="screw screw-br"></div>
+
+    <header class="shell-head">
+      <span class="brand">BLIP<span class="brand-r">&reg;</span></span>
+      <span class="model-no">PP-01&nbsp;MONO</span>
+    </header>
+
+    <div class="bezel">
+      <div class="bezel-label">&#9679; STILLNESS DISPLAY</div>
+      <div class="screen asleep" id="screen">
+        <div class="hud reveal">
+          <button class="quest" id="quest" title="click to edit today's quest">
+            <span class="hud-key">QUEST&middot;</span><span class="hud-val" id="questText">&mdash;</span>
+          </button>
+          <span class="streak" id="streakWrap" title="days in a row you checked in">
+            <span class="heart"></span><span class="hud-val" id="streakText">0</span>
+          </span>
+        </div>
+
+        <div class="stage">
+          <canvas id="pet" width="176" height="124"></canvas>
+          <div class="breath-label" id="breathLabel">breathe with me</div>
+        </div>
+
+        <div class="dialog reveal" id="dialog">
+          <span id="dialogText"></span><span class="cursor" id="cursor"></span>
+        </div>
+
+        <form class="entry reveal hidden" id="entry" autocomplete="off">
+          <label class="entry-key" id="entryLabel" for="entryInput">SAY&gt;</label>
+          <input id="entryInput" maxlength="80" spellcheck="false" />
+          <button type="submit" class="ok" id="entryOk">OK</button>
+        </form>
+        <div class="fin hidden" id="fin">&mdash; fresh moment next open &mdash;</div>
+      </div>
+    </div>
+
+    <footer class="shell-foot">
+      <span class="tagline">pause &middot; notice &middot; carry on</span>
+      <div class="speaker">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+    </footer>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

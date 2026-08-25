@@ -1,0 +1,464 @@
+/* popup.css — the handheld itself.
+   One chunky tomato shell, one green-gray LCD, five deliberate colors.
+   Dark mode is the "backlight" build: same shell, deep-navy screen, phosphor glow. */
+
+@font-face {
+  font-family: "Press Start 2P";
+  src: url("fonts/press-start-2p.woff2") format("woff2");
+  font-display: block;
+}
+@font-face {
+  font-family: "VT323";
+  src: url("fonts/vt323.woff2") format("woff2");
+  font-display: block;
+}
+
+:root {
+  /* palette: shell tomato + LCD green-gray + ink, and that's the whole story */
+  --shell-hi: #f0654f;
+  --shell: #e6402e;
+  --shell-lo: #b02c1a;
+  --bezel: #262420;
+  --lcd: #c9d2b6;
+  --ink: #232a1e;
+  --ink-dim: rgba(35, 42, 30, 0.55);
+  --grid: rgba(35, 42, 30, 0.08);
+  --glare: rgba(255, 255, 255, 0.16);
+  --heart: #c03726;
+  --glow: none;
+  /* Blip's pixels */
+  --px-o: #232a1e;
+  --px-b: #7c8a67;
+  --px-h: #99a681;
+  --px-e: #232a1e;
+  --px-m: #232a1e;
+  --px-c: #5f7053;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --shell-hi: #d84a37;
+    --shell: #c9361f;
+    --shell-lo: #8f2010;
+    --bezel: #1a1916;
+    --lcd: #0e1626;
+    --ink: #98f5cd;
+    --ink-dim: rgba(152, 245, 205, 0.45);
+    --grid: rgba(152, 245, 205, 0.06);
+    --glare: rgba(255, 255, 255, 0.06);
+    --heart: #ff8f7a;
+    --glow: drop-shadow(0 0 6px rgba(120, 240, 200, 0.35));
+    --px-o: #98f5cd;
+    --px-b: #17394a;
+    --px-h: #235664;
+    --px-e: #98f5cd;
+    --px-m: #98f5cd;
+    --px-c: #7a4038;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 340px;
+  height: 420px;
+  overflow: hidden;
+  background: #14120f;
+}
+
+body {
+  font-family: "VT323", ui-monospace, monospace;
+  -webkit-font-smoothing: none;
+}
+
+/* ---------- the shell ---------- */
+
+.shell {
+  position: relative;
+  width: 330px;
+  height: 410px;
+  margin: 5px;
+  padding: 13px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 26px;
+  background:
+    radial-gradient(140% 90% at 18% 0%, rgba(255, 255, 255, 0.28), transparent 45%),
+    linear-gradient(165deg, var(--shell-hi) 0%, var(--shell) 46%, var(--shell-lo) 100%);
+  box-shadow:
+    inset 0 2px 2px rgba(255, 255, 255, 0.35),
+    inset 0 -3px 4px rgba(0, 0, 0, 0.35),
+    inset 3px 0 3px rgba(255, 255, 255, 0.12),
+    inset -3px 0 4px rgba(0, 0, 0, 0.22),
+    0 4px 10px rgba(0, 0, 0, 0.55);
+}
+
+/* the molding seam where the two shell halves meet */
+.shell::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  bottom: 46px;
+  height: 3px;
+  background: linear-gradient(rgba(0, 0, 0, 0.32), rgba(255, 255, 255, 0.22));
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.screw {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background:
+    linear-gradient(45deg, transparent 44%, rgba(60, 10, 5, 0.85) 44%, rgba(60, 10, 5, 0.85) 56%, transparent 56%),
+    radial-gradient(circle at 35% 30%, var(--shell-hi), var(--shell-lo) 78%);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    0 1px 1px rgba(0, 0, 0, 0.45);
+}
+.screw-tl { top: 7px; left: 8px; }
+.screw-tr { top: 7px; right: 8px; }
+.screw-bl { bottom: 7px; left: 8px; }
+.screw-br { bottom: 7px; right: 8px; }
+
+.shell-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 12px;
+}
+
+.brand {
+  font-family: "Press Start 2P", monospace;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: var(--shell-lo);
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.32),
+    0 -1px 1px rgba(0, 0, 0, 0.4);
+}
+.brand-r {
+  font-size: 7px;
+  vertical-align: super;
+}
+
+.model-no {
+  font-family: "Press Start 2P", monospace;
+  font-size: 6px;
+  letter-spacing: 1px;
+  color: rgba(0, 0, 0, 0.42);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+/* ---------- bezel + screen ---------- */
+
+.bezel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  padding: 8px 10px 10px;
+  background: linear-gradient(170deg, #34312b, var(--bezel) 40%, #131210);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.14),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.bezel-label {
+  font-family: "Press Start 2P", monospace;
+  font-size: 5px;
+  letter-spacing: 1px;
+  color: #6d675c;
+  padding: 0 2px 6px;
+}
+
+.screen {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 8px 9px;
+  border-radius: 7px;
+  color: var(--ink);
+  background-color: var(--lcd);
+  background-image:
+    repeating-linear-gradient(0deg, var(--grid) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 3px);
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.3);
+  animation: poweron 0.5s ease-out 1;
+  caret-color: var(--ink);
+}
+
+/* glass glare, always on top of screen content */
+.screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 7px;
+  background: linear-gradient(118deg, var(--glare) 0%, transparent 34%);
+  pointer-events: none;
+}
+
+@keyframes poweron {
+  0% { filter: brightness(0.35); }
+  45% { filter: brightness(1.12); }
+  100% { filter: brightness(1); }
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--lcd);
+}
+
+/* the slow reveal: nothing pops in, everything settles in after the breath */
+.reveal {
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.screen:not(.asleep) .hud.reveal { transition-delay: 0.05s; }
+.screen:not(.asleep) .dialog.reveal { transition-delay: 0.22s; }
+.screen:not(.asleep) .entry.reveal { transition-delay: 0.4s; }
+.screen:not(.asleep) .reveal {
+  opacity: 1;
+  transform: none;
+}
+.screen.asleep .hud,
+.screen.asleep .dialog,
+.screen.asleep .entry,
+.screen.asleep .fin {
+  pointer-events: none;
+}
+
+/* ---------- HUD ---------- */
+
+.hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 18px;
+}
+
+.hud-key {
+  font-family: "Press Start 2P", monospace;
+  font-size: 7px;
+  letter-spacing: 0;
+}
+
+.hud-val {
+  font-family: "VT323", monospace;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.quest {
+  appearance: none;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  max-width: 218px;
+  overflow: hidden;
+  text-align: left;
+}
+.quest .hud-val {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.quest:hover .hud-val {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+
+.streak {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+/* 7x6-cell pixel heart, box-shadow painted */
+.heart {
+  width: 2px;
+  height: 2px;
+  margin: -4px 16px 0 0;
+  background: transparent;
+  box-shadow:
+    2px 0 var(--heart), 4px 0 var(--heart), 8px 0 var(--heart), 10px 0 var(--heart),
+    0 2px var(--heart), 2px 2px var(--heart), 4px 2px var(--heart), 6px 2px var(--heart), 8px 2px var(--heart), 10px 2px var(--heart), 12px 2px var(--heart),
+    0 4px var(--heart), 2px 4px var(--heart), 4px 4px var(--heart), 6px 4px var(--heart), 8px 4px var(--heart), 10px 4px var(--heart), 12px 4px var(--heart),
+    2px 6px var(--heart), 4px 6px var(--heart), 6px 6px var(--heart), 8px 6px var(--heart), 10px 6px var(--heart),
+    4px 8px var(--heart), 6px 8px var(--heart), 8px 8px var(--heart),
+    6px 10px var(--heart);
+}
+
+/* ---------- stage (Blip lives here) ---------- */
+
+.stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex: none;
+}
+
+#pet {
+  width: 176px;
+  height: 124px;
+  image-rendering: pixelated;
+  filter: var(--glow);
+}
+
+.breath-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  text-align: center;
+  font-size: 18px;
+  letter-spacing: 4px;
+  color: var(--ink);
+  animation: breathe-pulse 3.2s ease-in-out infinite;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.screen:not(.asleep) .breath-label {
+  opacity: 0 !important;
+  animation: none;
+}
+@keyframes breathe-pulse {
+  0%, 100% { opacity: 0.25; }
+  45%, 60% { opacity: 0.95; }
+}
+
+/* ---------- dialogue box ---------- */
+
+.dialog {
+  position: relative;
+  min-height: 74px;
+  border: 2px solid var(--ink);
+  padding: 8px 10px;
+  font-size: 17px;
+  line-height: 1.12;
+  cursor: default;
+  background: color-mix(in srgb, var(--lcd) 92%, var(--ink) 8%);
+}
+.dialog::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1px solid var(--ink-dim);
+  pointer-events: none;
+}
+.dialog.small {
+  font-size: 14px;
+  line-height: 1.15;
+}
+
+@media (prefers-color-scheme: dark) {
+  .dialog,
+  .breath-label,
+  .hud,
+  .entry,
+  .fin {
+    text-shadow: 0 0 6px rgba(120, 240, 200, 0.4);
+  }
+}
+
+.cursor {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 7px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 7px solid var(--ink);
+  visibility: hidden;
+}
+.cursor.on {
+  visibility: visible;
+  animation: cursor-blink 0.9s steps(2, start) infinite;
+}
+@keyframes cursor-blink {
+  to { visibility: hidden; }
+}
+
+/* ---------- name-entry field ---------- */
+
+.entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+}
+
+.entry-key {
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  flex: none;
+}
+
+#entryInput {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 2px dashed var(--ink-dim);
+  outline: none;
+  color: var(--ink);
+  font-family: "VT323", monospace;
+  font-size: 19px;
+  letter-spacing: 2px;
+  padding: 1px 2px 2px;
+}
+#entryInput:focus {
+  border-bottom-style: solid;
+  border-bottom-color: var(--ink);
+}
+#entryInput::placeholder {
+  color: var(--ink-dim);
+}
+
+.ok {
+  appearance: none;
+  flex: none;
+  font-family: "Press Start 2P", monospace;
+  font-size: 8px;
+  color: var(--ink);
+  background: transparent;
+  border: 2px solid var(--ink);
+  padding: 5px 7px 4px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 var(--ink-dim);
+}
+.ok:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
+.fin {
+  text-align: center;
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: var(--ink-dim);
+  min-height: 16px;
+}
+
+.hidden {
+  display: none !important;
+}
