@@ -1,0 +1,5 @@
+# your personal Gemini API key lives here — never commit it
+env.js
+
+.DS_Store
+node_modules/
